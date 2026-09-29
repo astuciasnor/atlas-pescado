@@ -5,3 +5,6 @@ usethis::use_git_config(user.name = "magalhaes-pedro-fepesca",
 usethis::create_github_token()
 # Abrir o arquivo .Renviron
 usethis::edit_r_environ()
+
+
+# Fazeno um  alinha para meu priemiro commit e colcaborador baixar essa modificação

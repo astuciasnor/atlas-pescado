@@ -1,0 +1,131 @@
+---
+title: "Missão 1: o primeiro PR do pescado"
+subtitle: "Uma oficina de Git para duas pessoas, sem pressa"
+lang: pt-BR
+format:
+  html:
+    toc: true
+    code-copy: true
+execute:
+  echo: true
+---
+
+::: callout-tip
+Abra este arquivo no RStudio e clique em **Render**. No HTML que abrir, cada bloco de código terá um botão de **copiar**. Cole comandos `bash` na aba **Terminal** (não no Console do R). Os blocos `r` rodam ao renderizar o documento.
+:::
+
+## O mapa da missão
+
+``` text
+colaborador:  branch → pequena edição → commit → push → pull request
+mantenedor:                                        revisão → merge
+```
+
+O **colaborador** propõe uma mudança. A **branch** é uma linha separada de trabalho; a `main` fica como referência. O **commit** registra uma versão. O **pull request (PR)** é um pedido de revisão: ele não faz o merge sozinho. O **mantenedor** revisa e decide se integra a mudança com o **merge**.
+
+**Missão de hoje:** propor este próprio `.qmd` como primeira contribuição. Ele já é a mudança; não é preciso criar nem editar outro arquivo. Execute **um bloco de Terminal por vez**, na ordem abaixo. Se aparecer um erro, parem e conversem antes de seguir.
+
+## 1. Onde estamos?
+
+No RStudio, abra **Tools → Terminal → New Terminal**. O Terminal deve estar na pasta deste projeto. Confira:
+
+``` bash
+git status --short --branch
+```
+
+A primeira linha mostra a branch atual. `M` indica arquivo modificado; `??`, arquivo novo. Pode haver mudanças em `.gitignore` e `teste.R`: **não vamos incluí-las** na missão. Confira também aonde `origin` aponta:
+
+``` bash
+git remote -v
+```
+
+Em um fluxo com **fork**, `origin` deve ser o fork do colaborador (um repositório na conta dele). O repositório do mantenedor é o destino do PR; se `origin` apontar para ele, **parem antes do push** e acertem juntos qual cópia estão usando. Não mudem remotos às cegas.
+
+## 2. Confira ou abra sua branch
+
+Antes de criar uma branch, confira a atual com `git branch --show-current`. Se a resposta for `docs/primeira-missao`, **a branch já existe: pule o próximo comando**. Apenas se estiver na `main` e essa branch ainda não existir, execute uma vez:
+
+``` bash
+git switch -c docs/primeira-missao
+```
+
+Confirme que a resposta é `docs/primeira-missao`:
+
+``` bash
+git branch --show-current
+```
+
+O `.qmd` ainda não está no Git: mesmo criado antes da branch, aparecerá no histórico **desta branch** quando vocês fizerem o commit. Outras alterações locais não entram automaticamente no commit: só entra o que vocês prepararem para ele.
+
+## 3. Conheça o teste em R
+
+O próprio `.qmd` já é a contribuição: **não é necessário editá-lo de novo**. Numa rodada futura, vocês podem praticar outra edição trocando a frase abaixo:
+
+> Olá, mantenedor! Nossa primeira contribuição está a caminho.
+>
+> Beleza?
+
+Agora olhe este *chunk* de R. Ele soma os quilos de dois peixes de brincadeira. Se quiserem, troquem `3` por `4` e ajustem o número no `stopifnot()` de `5` para `6`. O teste deve continuar passando.
+
+```{r}
+pesos_kg <- c(2, 3)
+total_kg <- sum(pesos_kg)
+stopifnot(total_kg == 5)
+total_kg
+```
+
+Se quiserem, cliquem em **Render** para executar o teste. Se aparecer `Error`, comparem a soma com o número esperado. O HTML e a pasta de apoio criados pela renderização são só uma prévia local: **enviem apenas o `.qmd`**. O mantenedor poderá renderizá-lo no computador dele.
+
+## 4. Prepare somente este arquivo
+
+No Terminal, verifiquem o que mudou:
+
+``` bash
+git status --short
+```
+
+Adicionem **apenas** o documento da missão à área de preparação (*stage*):
+
+``` bash
+git add primeira-missao-git.qmd
+```
+
+Façam a conferência antes de criar o commit:
+
+``` bash
+git diff --cached --name-only
+```
+
+**Teste de segurança:** a lista deve conter **somente** `primeira-missao-git.qmd`. Se aparecer outro nome, parem e revisem juntos. O HTML renderizado, a pasta `primeira-missao-git_files/`, `.gitignore` e `teste.R` não devem entrar neste commit.
+
+## 5. Registre e envie
+
+Com a conferência aprovada, criem o commit:
+
+``` bash
+git commit -m "docs: adiciona primeira missao de Git"
+```
+
+Verifiquem o último registro:
+
+``` bash
+git log -1 --oneline
+```
+
+**Somente se `origin` for o fork (ou um repositório em que o colaborador tem permissão de escrita)**, enviem a branch:
+
+``` bash
+git push -u origin docs/primeira-missao
+```
+
+`push` envia a branch ao GitHub; **ainda não altera a `main` do mantenedor**.
+
+## 6. Convide para revisar
+
+No GitHub, abram um **New pull request**. Se usaram um fork, confiram: **base = `main` do mantenedor** e **compare = `docs/primeira-missao` do colaborador**. Escrevam o que mudou e peçam uma revisão. O mantenedor pode comentar e pedir outra edição antes de clicar em **Merge**.
+
+**Combinado da dupla:** cada pessoa explica com suas palavras o que é uma branch e quem faz o merge. Nada de senhas ou tokens nos arquivos do projeto.
+
+::: callout-note
+**Próxima missão, outro dia:** `git fetch origin` busca informações novas do remoto **sem** fazer merge. Em um fork, `origin` costuma ser o fork, não o repositório do mantenedor; este pode ser configurado separadamente como `upstream`. Hoje basta saber que são lugares diferentes.
+:::
